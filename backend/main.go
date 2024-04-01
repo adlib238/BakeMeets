@@ -27,9 +27,11 @@ func main() {
 
 	// Repository
 	breadRepo := repository.BreadRepository{DB: db}
+	userRepo := repository.UserRepository{DB: db}
 
 	// Handlers
-	breadHandler := handlers.BreadHandler{Repository: &breadRepo}
+	breadHandler := handlers.BreadHandler{Br: &breadRepo}
+	userHandler := handlers.UserHandler{Ur: &userRepo}
 
 	// Routes
 	e.GET("/", func(c echo.Context) error {
@@ -40,6 +42,10 @@ func main() {
 	e.POST("/breads", breadHandler.CreateBread)
 	e.PUT("/breads/edit/:id", breadHandler.UpdateBread)
 	e.DELETE("/breads/:id", breadHandler.DeleteBread)
+
+	e.POST("/signup", userHandler.SignUp)
+	e.POST("/login", userHandler.Login)
+	e.POST("/logout", userHandler.Logout)
 
 	// Start server
 	e.Logger.Fatal(e.Start(":8080"))

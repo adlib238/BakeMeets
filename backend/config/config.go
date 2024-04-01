@@ -19,7 +19,8 @@ func GetConfig() *Config {
 	// Load .env file
 	err := godotenv.Load()
 	if err != nil {
-		panic("Error loading .env file")
+		fmt.Println("Error loading .env file:", err)
+		os.Exit(1) // Exit the program with an error code
 	}
 
 	return &Config{

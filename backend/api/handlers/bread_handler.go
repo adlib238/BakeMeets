@@ -10,11 +10,11 @@ import (
 )
 
 type BreadHandler struct {
-	Repository *repository.BreadRepository
+	Br *repository.BreadRepository
 }
 
 func (h *BreadHandler) GetAllBreads(c echo.Context) error {
-	breads, err := h.Repository.GetAllBreads()
+	breads, err := h.Br.GetAllBreads()
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
@@ -23,7 +23,7 @@ func (h *BreadHandler) GetAllBreads(c echo.Context) error {
 
 func (h *BreadHandler) GetBreadByID(c echo.Context) error {
 	id, _ := strconv.Atoi(c.Param("id"))
-	bread, err := h.Repository.GetBreadByID(uint(id))
+	bread, err := h.Br.GetBreadByID(uint(id))
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
@@ -35,7 +35,7 @@ func (h *BreadHandler) CreateBread(c echo.Context) error {
 	if err := c.Bind(&bread); err != nil {
 		return err
 	}
-	createdBread, err := h.Repository.CreateBread(bread)
+	createdBread, err := h.Br.CreateBread(bread)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
@@ -49,7 +49,7 @@ func (h *BreadHandler) UpdateBread(c echo.Context) error {
 		return err
 	}
 	bread.ID = uint(id)
-	updatedBread, err := h.Repository.UpdateBread(bread)
+	updatedBread, err := h.Br.UpdateBread(bread)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
@@ -58,11 +58,11 @@ func (h *BreadHandler) UpdateBread(c echo.Context) error {
 
 func (h *BreadHandler) DeleteBread(c echo.Context) error {
 	id, _ := strconv.Atoi(c.Param("id"))
-	bread, err := h.Repository.GetBreadByID(uint(id))
+	bread, err := h.Br.GetBreadByID(uint(id))
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
-	if err := h.Repository.DeleteBread(bread); err != nil {
+	if err := h.Br.DeleteBread(bread); err != nil {
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
 	return c.JSON(http.StatusOK, map[string]string{"result": "success"})
