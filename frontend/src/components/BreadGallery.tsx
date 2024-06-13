@@ -3,6 +3,7 @@ import breadData from "../data/breadData";
 import { Bread } from "../types/Bread";
 import { Box, Typography, IconButton, Modal } from "@mui/material";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import FavoriteIcon from "@mui/icons-material/Favorite";
 import CommentIcon from "@mui/icons-material/Comment";
 
 const styles = {
@@ -70,6 +71,7 @@ const BreadDetailModal = ({ bread, open, onClose }) => (
 );
 
 const BreadGallery = () => {
+  const [breads, setBreads] = useState(breadData);
   const [selectedBread, setSelectedBread] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
 
@@ -83,10 +85,26 @@ const BreadGallery = () => {
     setSelectedBread(null);
   };
 
+  const handleFavoriteClick = (event, breadId) => {
+    event.stopPropagation();
+    setBreads(
+      breads.map((bread) => {
+        if (bread.id === breadId) {
+          return {
+            ...bread,
+            isFavorite: !bread.isFavorite,
+            likes: bread.isFavorite ? bread.likes - 1 : bread.likes + 1,
+          };
+        }
+        return bread;
+      })
+    );
+  };
+
   return (
     <Box sx={{ display: "flex" }}>
       <Box sx={styles.breadGallery}>
-        {breadData.map((bread: Bread) => (
+        {breads.map((bread: Bread) => (
           <Box
             key={bread.id}
             sx={styles.breadCard}
@@ -101,10 +119,24 @@ const BreadGallery = () => {
               <Typography>{bread.name}</Typography>
               <Box sx={styles.breadStats}>
                 <Box>
-                  <FavoriteBorderIcon /> {bread.likes}
+                  <IconButton
+                    onClick={(event) => handleFavoriteClick(event, bread.id)}
+                  >
+                    {bread.isFavorite ? (
+                      <FavoriteIcon style={{ color: "pink" }} />
+                    ) : (
+                      <FavoriteBorderIcon />
+                    )}
+                  </IconButton>
+                  {bread.likes}
                 </Box>
                 <Box>
-                  <CommentIcon /> {bread.comments}
+                  <IconButton
+                    onClick={(event) => handleCommentClick(event, bread.id)}
+                  >
+                    <CommentIcon />
+                  </IconButton>
+                  {bread.comments}
                 </Box>
               </Box>
             </Box>
