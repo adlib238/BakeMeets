@@ -35,6 +35,9 @@ func (h *BreadHandler) CreateBread(c echo.Context) error {
 	if err := c.Bind(&bread); err != nil {
 		return err
 	}
+	if bread.ImageURL == "" {
+		bread.ImageURL = "noimage.webp"
+	}
 	createdBread, err := h.Br.CreateBread(bread)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err.Error())
@@ -49,6 +52,9 @@ func (h *BreadHandler) UpdateBread(c echo.Context) error {
 		return err
 	}
 	bread.ID = uint(id)
+	if bread.ImageURL == "" {
+		bread.ImageURL = "noimage.webp"
+	}
 	updatedBread, err := h.Br.UpdateBread(bread)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err.Error())

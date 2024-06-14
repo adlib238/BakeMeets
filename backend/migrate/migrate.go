@@ -17,7 +17,7 @@ func main() {
 	}
 
 	// Automigrate will create or update the tables based on the models
-	err = db.AutoMigrate(&models.Bread{}, &models.User{})
+	err = db.AutoMigrate(&models.Bread{}, &models.User{}, &models.Comment{})
 	if err != nil {
 		fmt.Printf("Error during migration: %v\n", err)
 		return
