@@ -37,15 +37,20 @@ func main() {
 	e.GET("/", func(c echo.Context) error {
 		return c.String(http.StatusOK, "Welcome to BreadMeets!")
 	})
+
 	e.GET("/breads", breadHandler.GetAllBreads)
 	e.GET("/breads/:id", breadHandler.GetBreadByID)
 	e.POST("/breads", breadHandler.CreateBread)
 	e.PUT("/breads/edit/:id", breadHandler.UpdateBread)
 	e.DELETE("/breads/:id", breadHandler.DeleteBread)
 
+	// アカウント
 	e.POST("/signup", userHandler.SignUp)
 	e.POST("/login", userHandler.Login)
 	e.POST("/logout", userHandler.Logout)
+
+	// お気に入りロジック
+	e.PATCH("/breads/favorite/:id", breadHandler.UpdateFavorite)
 
 	// Start server
 	e.Logger.Fatal(e.Start(":8080"))

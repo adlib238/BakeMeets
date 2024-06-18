@@ -13,6 +13,11 @@ type BreadHandler struct {
 	Br *repository.BreadRepository
 }
 
+type FavoriteRequest struct {
+	BreadID    int  `json:"breadId"`
+	IsFavorite bool `json:"isFavorite"`
+}
+
 func (h *BreadHandler) GetAllBreads(c echo.Context) error {
 	breads, err := h.Br.GetAllBreads()
 	if err != nil {
@@ -72,4 +77,28 @@ func (h *BreadHandler) DeleteBread(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
 	return c.JSON(http.StatusOK, map[string]string{"result": "success"})
+}
+
+func (h *BreadHandler) UpdateFavorite(c echo.Context) error {
+	req := new(FavoriteRequest)
+	if err := c.Bind(req); err != nil {
+		return c.JSON(http.StatusInternalServerError, err.Error())
+	}
+	bread, err := h.Br.GetBreadByID(uint(req.BreadID))
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, err.Error())
+	}
+	// データベースまたはその他のストレージで状態を更新する
+	if req.IsFavorite == true {
+		bread.FavoriteCount++
+	} else {
+		if bread.FavoriteCount > 0 {
+			bread.FavoriteCount--
+		}
+	}
+	updatedBread, err := h.Br.UpdateBread(bread)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, err.Error())
+	}
+	return c.JSON(http.StatusOK, updatedBread)
 }
